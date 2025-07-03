@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Village Mart - Login/Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #e6f2ff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      position: relative;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+    }
+    .back-home {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: #007bff;
+      cursor: pointer;
+    }
+    h2 {
+      text-align: center;
+      color: #0084ff;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      background: #0084ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .switch-link a {
+      color: #0084ff;
+      cursor: pointer;
+    }
+    .form-helper {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    #message-box {
+      background: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+      display: none;
+      margin-bottom: 10px;
+      animation: fadeInOut 3s linear forwards;
+    }
+    @keyframes fadeInOut {
+      0% {opacity: 0;}
+      10% {opacity: 1;}
+      90% {opacity: 1;}
+      100% {opacity: 0;}
+    }
+
+    #success-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #success-overlay div {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      font-size: 18px;
+      color: green;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="auth-box">
+  <div class="back-home" onclick="goHome()">&larr; Back to Home</div>
+  <h2>Village Mart</h2>
+
+  <div id="message-box">✅ Message</div>
+
+  <!-- Login Form -->
+  <form id="login-form">
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="text" id="login-mobile" required />
+    </div>
+
+    <div class="form-group" id="login-password-group">
+      <label>Password</label>
+      <input type="password" id="login-password" />
+    </div>
+
+    <div class="form-group hidden" id="login-otp-group">
+      <label>OTP</label>
+      <input type="text" id="login-otp" />
+    </div>
+
+    <div class="form-group hidden" id="login-generate-btn">
+      <button type="button" onclick="sendLoginOTP()">Generate OTP</button>
+    </div>
+
+    <div class="form-helper" id="login-helper">
+      <span>Forget Password?</span>
+      <span onclick="toggleLoginMode()" style="color:#007bff; cursor:pointer;">Login with OTP</span>
+    </div>
+
+    <button type="submit">Login</button>
+    <div class="switch-link">
+      New user? <a onclick="showSignup()">Sign up</a>
+    </div>
+  </form>
+
+  <!-- Signup Form -->
+  <form id="signup-form" class="hidden">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="signup-name" required />
+    </div>
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="text" id="signup-mobile" required />
+    </div>
+    <div class="form-group">
+      <button type="button" onclick="sendSignupOTP()">Get OTP</button>
+    </div>
+    <div class="form-group">
+      <label>Enter OTP</label>
+      <input type="text" id="signup-otp" required />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="signup-pass" required />
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="signup-confirm" required />
+    </div>
+    <button type="submit">Sign Up</button>
+    <div class="switch-link">
+      Already have an account? <a onclick="showLogin()">Login</a>
+    </div>
+  </form>
+</div>
+
+<!-- Signup Success Overlay -->
+<div id="success-overlay">
+  <div>✅ Signup Successful!<br><br>Redirecting to Login...</div>
+</div>
+
+<script>
+  let loginWithOTP = false;
+  let users = {}; // Store users like { "9876543210": { name: "Ram", password: "abc123" } }
+
+  function showSignup() {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.remove('hidden');
+  }
+
+  function showLogin() {
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
+  }
+
+  function goHome() {
+    window.location.href = "index.html";
+  }
+
+  function toggleLoginMode() {
+    loginWithOTP = !loginWithOTP;
+    document.getElementById('login-password-group').classList.toggle('hidden');
+    document.getElementById('login-otp-group').classList.toggle('hidden');
+    document.getElementById('login-generate-btn').classList.toggle('hidden');
+    document.getElementById('login-helper').style.display = loginWithOTP ? 'none' : 'flex';
+  }
+
+  function showMessage(msg) {
+    const box = document.getElementById('message-box');
+    box.innerText = msg;
+    box.style.display = 'block';
+    setTimeout(() => {
+      box.style.display = 'none';
+    }, 3000);
+  }
+
+  function sendSignupOTP() {
+    showMessage("✅ OTP sent successfully!");
+  }
+
+  function sendLoginOTP() {
+    showMessage("✅ Login OTP sent!");
+  }
+
+  document.getElementById('signup-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value.trim();
+    const mobile = document.getElementById('signup-mobile').value.trim();
+    const pass = document.getElementById('signup-pass').value;
+    const confirm = document.getElementById('signup-confirm').value;
+    const otp = document.getElementById('signup-otp').value;
+
+    if (pass !== confirm) {
+      showMessage("❌ Passwords do not match!");
+      return;
+    }
+
+    if (otp !== "1234") {
+      showMessage("❌ Invalid OTP (try '1234')");
+      return;
+    }
+
+    // Save user
+    users[mobile] = { name, password: pass };
+
+    document.getElementById('success-overlay').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('success-overlay').style.display = 'none';
+      showLogin();
+    }, 3000);
+  });
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const mobile = document.getElementById('login-mobile').value.trim();
+
+  if (!users[mobile]) {
+    showMessage("❌ You need to signup first!");
+    return;
+  }
+
+  if (loginWithOTP) {
+    const otp = document.getElementById('login-otp').value;
+    if (otp === "1234") {
+      showMessage("✅ Login Successful with OTP");
+      setTimeout(() => {
+        window.location.href = "index2.html";
+      }, 1500); // Give the user time to see the message
+    } else {
+      showMessage("❌ Invalid OTP (try '1234')");
+    }
+  } else {
+    const pass = document.getElementById('login-password').value;
+    if (users[mobile].password === pass) {
+      showMessage("✅ Login Successful");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    } else {
+      showMessage("❌ Incorrect Password");
+    }
+  }
+});
+
+</script>
+
+</body>
+</html>
