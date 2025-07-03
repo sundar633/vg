@@ -163,6 +163,72 @@
       object-fit: cover;
       margin-bottom: 10px;
     }
+    #chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0084ff;
+  color: #fff;
+  padding: 12px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#chatbot-box {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  z-index: 1000;
+}
+
+#chatbot-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.bot, .user {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  max-width: 90%;
+}
+
+.bot {
+  background: #f1f0f0;
+  align-self: flex-start;
+}
+
+.user {
+  background: #d1eaff;
+  align-self: flex-end;
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  padding: 8px;
+  border: none;
+  background: #e0f7fa;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#upload-box {
+  margin-top: 10px;
+}
+
 
     .footer {
       text-align: center;
@@ -239,6 +305,26 @@
       <div>Home Needs</div>
     </div>
   </div>
+  <!-- Chatbot Button -->
+<div id="chatbot-toggle" onclick="toggleChatbot()">💬</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-box">
+  <div id="chatbot-messages">
+    <div class="bot">Hi! How can I help you?</div>
+    <div class="options">
+      <button onclick="handleOption('payment')">💳 Payment History</button>
+      <button onclick="handleOption('support')">🛠 Contact Support</button>
+      <button onclick="handleOption('call')">📞 Call Us</button>
+      <button onclick="handleOption('order')">📦 Order Details</button>
+      <button onclick="handleOption('issue')">❗ Issue with Product</button>
+    </div>
+  </div>
+  <div id="upload-box" style="display: none;">
+    <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage()">
+  </div>
+</div>
+
 
   <div class="footer">
     © 2025 All rights reserved
@@ -300,6 +386,60 @@
   window.onclick = function(event) {
     if (!event.target.closest('.profile')) {
       document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
+    let chatbotOpen = false;
+
+  function toggleChatbot() {
+    chatbotOpen = !chatbotOpen;
+    document.getElementById('chatbot-box').style.display = chatbotOpen ? 'flex' : 'none';
+  }
+
+  function handleOption(option) {
+    const messages = document.getElementById("chatbot-messages");
+    const uploadBox = document.getElementById("upload-box");
+
+    // Show user reply
+    const userReply = document.createElement("div");
+    userReply.className = "user";
+    userReply.innerText = optionToText(option);
+    messages.appendChild(userReply);
+
+    // Bot response
+    const botReply = document.createElement("div");
+    botReply.className = "bot";
+
+    if (option === "issue") {
+      botReply.innerText = "Thank you! Please upload a picture of the issue:";
+      uploadBox.style.display = "block";
+    } else {
+      botReply.innerText = "Thank you! We will get back to you soon as possible.";
+    }
+
+    messages.appendChild(botReply);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function optionToText(option) {
+    switch(option) {
+      case 'payment': return 'Payment History';
+      case 'support': return 'Contact Support';
+      case 'call': return 'Call Us';
+      case 'order': return 'Order Details';
+      case 'issue': return 'Issue with Product';
+    }
+  }
+
+  function uploadImage() {
+    const fileInput = document.getElementById("imageUpload");
+    const file = fileInput.files[0];
+    if (file) {
+      // Simulate sending to link1addthis
+      const botReply = document.createElement("div");
+      botReply.className = "bot";
+      botReply.innerText = "Image uploaded to link1addthis. We will get back to you soon as possible.";
+      document.getElementById("chatbot-messages").appendChild(botReply);
+      document.getElementById("upload-box").style.display = "none";
     }
   }
 </script>
