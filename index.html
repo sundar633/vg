@@ -20,17 +20,20 @@
 
     /* Splash screen */
     #splash {
-      position: fixed;
-      background: #e0f7fa;
-      height: 100vh;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: fadeOut 1s ease forwards;
-      animation-delay: 5s;
-      z-index: 9999;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0f7fa;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 5s;
+  z-index: 9999;
+}
+
 
     @keyframes fadeOut {
       to {
@@ -40,9 +43,11 @@
     }
 
     #splash img {
-      width: 150px;
-      animation: zoomIn 2s ease-in-out infinite;
-    }
+  width: 150px;
+  height: auto;
+  animation: zoomIn 2s ease-in-out infinite;
+}
+
 
     @keyframes zoomIn {
       0%, 100% { transform: scale(1); }
@@ -233,35 +238,37 @@
     document.getElementById('main').style.display = 'block';
   }, 5000);
 
-  // Toggle profile dropdown
-  function toggleDropdown() {
-    const dropdown = document.getElementById("profileDropdown");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-  }
+  // Get user current location using browser geolocation
+  function getUserLocation() {
+    const locationDiv = document.getElementById('location');
 
-  // Go to another page
-  function goToPage(url) {
-    window.location.href = url;
-  }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
 
-  // Get user location (village + state only)
-  fetch('https://ipapi.co/json/')
-    .then(response => response.json())
-    .then(data => {
-      const locationDiv = document.getElementById('location');
-      locationDiv.innerText = `${data.city || 'Your Village'}, ${data.region}`;
-    })
-    .catch(() => {
-      document.getElementById('location').innerText = 'Location unavailable';
-    });
-
-  // Close dropdown if clicked outside
-  window.onclick = function(event) {
-    if (!event.target.closest('.profile')) {
-      document.getElementById("profileDropdown").style.display = "none";
+        // Reverse geocode using OpenStreetMap
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+          .then(res => res.json())
+          .then(data => {
+            const village = data.address.village || data.address.town || data.address.city || "Your Area";
+            const state = data.address.state || "";
+            locationDiv.innerText = `${village}, ${state}`;
+          })
+          .catch(() => {
+            locationDiv.innerText = "Location unavailable";
+          });
+      }, () => {
+        locationDiv.innerText = "Permission denied";
+      });
+    } else {
+      locationDiv.innerText = "Geolocation not supported";
     }
   }
+
+  getUserLocation(); // Call it on load
 </script>
+
 
 </body>
 </html>
