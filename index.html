@@ -47,6 +47,20 @@
   height: auto;
   animation: zoomIn 2s ease-in-out infinite;
 }
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.location.animate {
+  animation: slideInLeft 1s ease forwards;
+}
 
 
     @keyframes zoomIn {
@@ -253,7 +267,10 @@
           .then(data => {
             const village = data.address.village || data.address.town || data.address.city || "Your Area";
             const state = data.address.state || "";
+
+            // Add location with animation
             locationDiv.innerText = `${village}, ${state}`;
+            locationDiv.classList.add('animate');
           })
           .catch(() => {
             locationDiv.innerText = "Location unavailable";
@@ -267,7 +284,26 @@
   }
 
   getUserLocation(); // Call it on load
+
+  // Toggle profile dropdown
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  // Go to another page
+  function goToPage(url) {
+    window.location.href = url;
+  }
+
+  // Close dropdown if clicked outside
+  window.onclick = function(event) {
+    if (!event.target.closest('.profile')) {
+      document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
 </script>
+
 
 
 </body>
