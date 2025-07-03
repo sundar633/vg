@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #e0f7fa;
+      color: #333;
+    }
+
+    /* Splash screen */
+    #splash {
+      position: fixed;
+      background: #e0f7fa;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeOut 1s ease forwards;
+      animation-delay: 5s;
+      z-index: 9999;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    #splash img {
+      width: 150px;
+      animation: zoomIn 2s ease-in-out infinite;
+    }
+
+    @keyframes zoomIn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .location::before {
+      content: "📍";
+      margin-right: 5px;
+    }
+
+    .profile {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile img {
+      width: 35px;
+      border-radius: 50%;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .dropdown a:hover {
+      background: #f0f0f0;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 30px 0 20px;
+      color: #00796b;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      width: 150px;
+      background: #fff;
+      border-radius: 10px;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 45%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="logo.png" alt="Village Mart Logo" />
+</div>
+
+<!-- Main Page -->
+<div id="main" style="display: none;">
+  <div class="header">
+    <div class="location" id="location">Detecting location...</div>
+    <div class="profile" onclick="toggleDropdown()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
+      <div class="dropdown" id="profileDropdown">
+        <a href="#">Login</a>
+        <a href="#">Sign Up</a>
+        <a href="#">Order Details</a>
+        <a href="#">Payment History</a>
+        <a href="#">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title">Village Mart</h1>
+
+  <div class="grid">
+    <div class="card" onclick="goToPage('groceries.html')">
+      <img src="https://img.icons8.com/color/96/grocery-bag.png" alt="Groceries" />
+      <div>Groceries</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/vegetarian-food.png" alt="Veg Food" />
+      <div>Veg Food</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/meat.png" alt="Non-Veg" />
+      <div>Non-Veg</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/popcorn.png" alt="Snacks" />
+      <div>Snacks</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/milk-bottle.png" alt="Dairy" />
+      <div>Dairy</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/apple.png" alt="Fruits" />
+      <div>Fruits</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/soda-bottle.png" alt="Beverages" />
+      <div>Beverages</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/cleaning.png" alt="Home Needs" />
+      <div>Home Needs</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 All rights reserved
+  </div>
+</div>
+
+<script>
+  // Splash screen transition
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  }, 5000);
+
+  // Toggle profile dropdown
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  // Go to another page
+  function goToPage(url) {
+    window.location.href = url;
+  }
+
+  // Get user location (village + state only)
+  fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+      const locationDiv = document.getElementById('location');
+      locationDiv.innerText = `${data.city || 'Your Village'}, ${data.region}`;
+    })
+    .catch(() => {
+      document.getElementById('location').innerText = 'Location unavailable';
+    });
+
+  // Close dropdown if clicked outside
+  window.onclick = function(event) {
+    if (!event.target.closest('.profile')) {
+      document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #e0f7fa;
+      color: #333;
+    }
+
+    /* Splash screen */
+    #splash {
+      position: fixed;
+      background: #e0f7fa;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeOut 1s ease forwards;
+      animation-delay: 5s;
+      z-index: 9999;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    #splash img {
+      width: 150px;
+      animation: zoomIn 2s ease-in-out infinite;
+    }
+
+    @keyframes zoomIn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .location::before {
+      content: "📍";
+      margin-right: 5px;
+    }
+
+    .profile {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile img {
+      width: 35px;
+      border-radius: 50%;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .dropdown a:hover {
+      background: #f0f0f0;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 30px 0 20px;
+      color: #00796b;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      width: 150px;
+      background: #fff;
+      border-radius: 10px;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 45%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="logo.png" alt="Village Mart Logo" />
+</div>
+
+<!-- Main Page -->
+<div id="main" style="display: none;">
+  <div class="header">
+    <div class="location" id="location">Detecting location...</div>
+    <div class="profile" onclick="toggleDropdown()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
+      <div class="dropdown" id="profileDropdown">
+        <a href="#">Login</a>
+        <a href="#">Sign Up</a>
+        <a href="#">Order Details</a>
+        <a href="#">Payment History</a>
+        <a href="#">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title">Village Mart</h1>
+
+  <div class="grid">
+    <div class="card" onclick="goToPage('groceries.html')">
+      <img src="https://img.icons8.com/color/96/grocery-bag.png" alt="Groceries" />
+      <div>Groceries</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/vegetarian-food.png" alt="Veg Food" />
+      <div>Veg Food</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/meat.png" alt="Non-Veg" />
+      <div>Non-Veg</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/popcorn.png" alt="Snacks" />
+      <div>Snacks</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/milk-bottle.png" alt="Dairy" />
+      <div>Dairy</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/apple.png" alt="Fruits" />
+      <div>Fruits</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/soda-bottle.png" alt="Beverages" />
+      <div>Beverages</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/cleaning.png" alt="Home Needs" />
+      <div>Home Needs</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 All rights reserved
+  </div>
+</div>
+
+<script>
+  // Splash screen transition
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  }, 5000);
+
+  // Toggle profile dropdown
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  // Go to another page
+  function goToPage(url) {
+    window.location.href = url;
+  }
+
+  // Get user location (village + state only)
+  fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+      const locationDiv = document.getElementById('location');
+      locationDiv.innerText = `${data.city || 'Your Village'}, ${data.region}`;
+    })
+    .catch(() => {
+      document.getElementById('location').innerText = 'Location unavailable';
+    });
+
+  // Close dropdown if clicked outside
+  window.onclick = function(event) {
+    if (!event.target.closest('.profile')) {
+      document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
+</script>
+
+</body>
+</html>
